@@ -27,7 +27,7 @@ like "raw 16" and "raw 32" except they are node buffers instead of strings.
 
 Also I've added a type for `undefined` that works just like the `null` type.
 
-    undefined  11000100  0xc4
+    undefined  11010100  0xd4
 
 ## Usage
 
