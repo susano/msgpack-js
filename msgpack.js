@@ -204,16 +204,6 @@ Decoder.prototype.parse = function () {
     extType = bops.readUInt8(this.buffer, this.offset + 1);
     this.offset += 2;
     return [extType, this.bin(8)];
-  // fixext 16
-  case 0xd8:
-    extType = bops.readUInt8(this.buffer, this.offset + 1);
-    this.offset += 2;
-    return [extType, this.bin(16)];
-  // str 8
-  case 0xd9:
-    length = bops.readUInt8(this.buffer, this.offset + 1);
-    this.offset += 2;
-    return this.str(length);
   // str 16
   case 0xda:
     length = bops.readUInt16BE(this.buffer, this.offset + 1);
@@ -248,12 +238,12 @@ Decoder.prototype.parse = function () {
   case 0xd8:
     length = bops.readUInt16BE(this.buffer, this.offset + 1);
     this.offset += 3;
-    return this.buf(length);
+    return this.bin(length);
   // buffer 32
   case 0xd9:
     length = bops.readUInt32BE(this.buffer, this.offset + 1);
     this.offset += 5;
-    return this.buf(length);
+    return this.bin(length);
   }
 
   throw new Error("Unknown type 0x" + type.toString(16));
@@ -284,13 +274,6 @@ function encode(value, buffer, offset) {
       buffer[offset] = length | 0xa0;
       bops.copy(value, buffer, offset + 1);
       return 1 + length;
-    }
-    // str 8
-    if (length < 0x100) {
-      buffer[offset] = 0xd9;
-      bops.writeUInt8(buffer, length, offset + 1);
-      bops.copy(value, buffer, offset + 2);
-      return 2 + length;
     }
     // str 16
     if (length < 0x10000) {
@@ -491,9 +474,6 @@ function sizeof(value) {
     length = bops.from(value).length;
     if (length < 0x20) {
       return 1 + length;
-    }
-    if (length < 0x100) {
-      return 2 + length;
     }
     if (length < 0x10000) {
       return 3 + length;

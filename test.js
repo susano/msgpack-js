@@ -91,3 +91,21 @@ test('returns undefined for a function', function (assert) {
   assert.equal(msgpack.encode(noop), JSON.stringify(noop))
   assert.end()
 })
+
+test('handles large buffers correctly', function(assert) {
+  var testBuffers = [
+    Buffer.alloc(0x09999, 0b01010101),
+    Buffer.alloc(0x10001, 0b10101010)
+  ]
+  testBuffers.forEach(function (input) {
+    var output = msgpack.decode(msgpack.encode(input))
+    assert.equal(output.length, input.length)
+
+    for (var i = 0, length = input.length; i != length; ++i) {
+      if (output[i] !== input[i]) {
+        assert.notOk()
+      }
+    }
+  });
+  assert.end()
+})
