@@ -18,7 +18,8 @@ var tests = [
   1.1, 0.1, -0.02,
   'hello', 'world', bops.from("Hello"), bops.from("World"),
   [1,2,3], [], {name: "Tim", age: 29}, {},
-  {a: 1, b: 2, c: [1, 2, 3]}
+  {a: 1, b: 2, c: [1, 2, 3]},
+  [void(8), 10]
 ];
 
 test('regression test #10', function (assert) {
